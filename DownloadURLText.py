@@ -1,10 +1,38 @@
-import urllib2
+"""
+A very simple example of downloading content of a URL
+"""
 
-dataURL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf;hb=HEAD"
+import urllib2, os
 
-fd = open("downloaded.txt","w")
 
-for line in urllib2.urlopen(dataURL):
-	fd.write(line)
+def downloadFile(URL="",fileName="downloaded.txt"):
+
+	# URL to the file to be downloaded
+	_dataURL = "https://code.wireshark.org/review/gitweb?p=wireshark.git;a=blob_plain;f=manuf;hb=HEAD"
 	
-fd.close()
+	_url = URL
+	
+	if _url.strip() == "":
+		_url = _dataURL
+		
+	try:
+		# open a file to write the content into
+		_fd = open(fileName,"w")
+
+		# read the lines and write into the file
+		for line in urllib2.urlopen(_url):
+			_fd.write(line)
+			
+	except:
+		# download failed, remove the empty file
+		os.remove(fileName)
+		
+		# return the error to calling logic
+		raise
+		
+	finally:
+		# close the output file
+		_fd.close()
+	
+if __name__ == "__main__":
+	downloadFile()
